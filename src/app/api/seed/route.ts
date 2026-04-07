@@ -243,8 +243,8 @@ export async function POST() {
         pagamento: pagamentoId,
       },
     })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Erro desconhecido'
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : JSON.stringify(error)
     return Response.json({ error: message }, { status: 500 })
   }
 }
