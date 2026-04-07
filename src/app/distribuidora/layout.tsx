@@ -16,7 +16,7 @@ export default function DistribuidoraLayout({ children }: { children: React.Reac
   return (
     <div className="flex min-h-screen">
       <Sidebar items={items} tipo="distribuidora" />
-      <main className="flex-1 p-6 bg-bg">{children}</main>
+      <main className="flex-1 p-4 lg:p-6 bg-bg lg:pl-6 pl-4 pt-16 lg:pt-6">{children}</main>
     </div>
   )
 }
