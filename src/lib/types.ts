@@ -1,16 +1,20 @@
 export interface Profile {
   id: string
-  email: string
   tipo: 'posto' | 'distribuidora'
-  nome_fantasia: string
+  nome: string
   cnpj: string
   telefone: string
-  endereco: string
   cidade: string
   estado: string
   lat: number
   lng: number
   score: number
+  bandeira: string
+  volume_mensal: number
+  combustiveis: string[]
+  total_deals: number
+  regiao_atuacao: string[]
+  capacidade_logistica: string
   created_at: string
 }
 

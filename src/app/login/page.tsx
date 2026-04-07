@@ -94,8 +94,8 @@ export default function LoginPage() {
 
           <div className="bg-[#FFF1E8] rounded-xl p-4 text-sm space-y-1.5">
             <p className="text-xs font-semibold text-brand mb-2">Credenciais Demo</p>
-            <p className="text-xs text-gray-600"><span className="font-medium">Posto:</span> posto1@demo.com / demo123</p>
-            <p className="text-xs text-gray-600"><span className="font-medium">Distribuidora:</span> dist1@demo.com / demo123</p>
+            <p className="text-xs text-gray-600"><span className="font-medium">Posto:</span> posto@fuelbid.com / 123456</p>
+            <p className="text-xs text-gray-600"><span className="font-medium">Distribuidora:</span> distribuidora@fuelbid.com / 123456</p>
           </div>
         </div>
 

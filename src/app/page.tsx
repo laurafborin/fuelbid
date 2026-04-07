@@ -70,6 +70,20 @@ const stats = [
 
 export default function Home() {
   const [loading, setLoading] = useState(false)
+  const [setupLoading, setSetupLoading] = useState(false)
+
+  async function handleSetup() {
+    setSetupLoading(true)
+    try {
+      const res = await fetch('/api/setup-profiles', { method: 'POST' })
+      const data = await res.json()
+      alert(data.message || data.error || 'Pronto!')
+    } catch {
+      alert('Erro ao configurar perfis')
+    } finally {
+      setSetupLoading(false)
+    }
+  }
 
   async function handleSeed() {
     setLoading(true)
@@ -164,13 +178,23 @@ export default function Home() {
         <p className="text-gray-400 text-sm">
           FuelBid © 2025 — TCC Laura Borin, Isabela Garcia, Letícia Dias — FGV-EAESP
         </p>
-        <button
-          onClick={handleSeed}
-          disabled={loading}
-          className="mt-3 text-gray-300 hover:text-gray-500 text-xs transition-colors disabled:opacity-50"
-        >
-          {loading ? 'Carregando...' : 'Carregar Dados Demo'}
-        </button>
+        <div className="mt-3 flex gap-3 justify-center">
+          <button
+            onClick={handleSetup}
+            disabled={setupLoading}
+            className="text-gray-300 hover:text-gray-500 text-xs transition-colors disabled:opacity-50"
+          >
+            {setupLoading ? 'Configurando...' : 'Configurar Perfis'}
+          </button>
+          <span className="text-gray-200">•</span>
+          <button
+            onClick={handleSeed}
+            disabled={loading}
+            className="text-gray-300 hover:text-gray-500 text-xs transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Carregando...' : 'Carregar Dados Demo'}
+          </button>
+        </div>
       </footer>
     </div>
   )

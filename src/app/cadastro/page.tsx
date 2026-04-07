@@ -36,12 +36,10 @@ export default function CadastroPage() {
     if (data.user) {
       const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
-        email,
         tipo,
-        nome_fantasia: nome,
+        nome,
         cnpj,
         telefone,
-        endereco,
         cidade,
         estado,
         lat: -23.55 + Math.random() * 0.1,

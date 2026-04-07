@@ -37,8 +37,8 @@ export default function PagamentosPostoPage() {
       const valorLiquido = valorTotal - icms - pis - cofins
       const chave = Array.from({ length: 44 }, () => Math.floor(Math.random() * 10)).join('')
 
-      const { data: postoPerfil } = await supabase.from('profiles').select('nome_fantasia').eq('id', c.posto_id).single()
-      const { data: distPerfil } = await supabase.from('profiles').select('nome_fantasia').eq('id', c.distribuidora_id).single()
+      const { data: postoPerfil } = await supabase.from('profiles').select('nome').eq('id', c.posto_id).single()
+      const { data: distPerfil } = await supabase.from('profiles').select('nome').eq('id', c.distribuidora_id).single()
 
       await supabase.from('nfes').insert({
         contrato_id: c.id,
@@ -49,8 +49,8 @@ export default function PagamentosPostoPage() {
         pis,
         cofins,
         valor_liquido: valorLiquido,
-        emitente: distPerfil?.nome_fantasia || '',
-        destinatario: postoPerfil?.nome_fantasia || '',
+        emitente: distPerfil?.nome || '',
+        destinatario: postoPerfil?.nome || '',
         combustivel: c.combustivel,
         volume_litros: c.volume_litros,
       })

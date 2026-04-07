@@ -80,12 +80,12 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
         <div className="grid grid-cols-2 gap-6">
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 mb-1">Posto (Comprador)</p>
-            <p className="font-semibold">{contrato.posto?.nome_fantasia}</p>
+            <p className="font-semibold">{contrato.posto?.nome}</p>
             <p className="text-xs text-gray-500">{contrato.posto?.cnpj}</p>
           </div>
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 mb-1">Distribuidora (Vendedor)</p>
-            <p className="font-semibold">{contrato.distribuidora?.nome_fantasia}</p>
+            <p className="font-semibold">{contrato.distribuidora?.nome}</p>
             <p className="text-xs text-gray-500">{contrato.distribuidora?.cnpj}</p>
           </div>
         </div>

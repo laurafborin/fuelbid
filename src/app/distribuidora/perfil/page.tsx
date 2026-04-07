@@ -32,18 +32,18 @@ export default function PerfilDistribuidoraPage() {
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center text-2xl">🚛</div>
           <div>
-            <h2 className="text-xl font-bold">{profile.nome_fantasia}</h2>
+            <h2 className="text-xl font-bold">{profile.nome}</h2>
             <p className="text-sm text-gray-500">Distribuidora</p>
             <Stars rating={profile.score} />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div><span className="text-gray-500">E-mail</span><p className="font-medium">{profile.email}</p></div>
+          <div><span className="text-gray-500">Tipo</span><p className="font-medium capitalize">{profile.tipo}</p></div>
           <div><span className="text-gray-500">CNPJ</span><p className="font-medium">{profile.cnpj}</p></div>
           <div><span className="text-gray-500">Telefone</span><p className="font-medium">{profile.telefone}</p></div>
           <div><span className="text-gray-500">Score</span><p className="font-medium">{profile.score?.toFixed(1)}</p></div>
-          <div className="col-span-2"><span className="text-gray-500">Endereço</span><p className="font-medium">{profile.endereco}, {profile.cidade}/{profile.estado}</p></div>
+          <div className="col-span-2"><span className="text-gray-500">Localização</span><p className="font-medium">{profile.cidade}/{profile.estado}</p></div>
         </div>
       </div>
     </div>

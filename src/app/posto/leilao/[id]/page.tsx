@@ -69,7 +69,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
 
   const mapPoints = lances
     .filter(l => l.distribuidora)
-    .map(l => ({ lat: l.distribuidora!.lat, lng: l.distribuidora!.lng, nome: l.distribuidora!.nome_fantasia }))
+    .map(l => ({ lat: l.distribuidora!.lat, lng: l.distribuidora!.lng, nome: l.distribuidora!.nome }))
 
   return (
     <div>
@@ -99,7 +99,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
                 {lances.map((lance, i) => (
                   <div key={lance.id} className={`flex items-center justify-between p-4 rounded-lg border ${i === 0 ? 'border-brand bg-brand/5' : 'border-gray-100'}`}>
                     <div>
-                      <p className="font-semibold text-sm">{lance.distribuidora?.nome_fantasia || 'Distribuidora'}</p>
+                      <p className="font-semibold text-sm">{lance.distribuidora?.nome || 'Distribuidora'}</p>
                       <p className="text-xs text-gray-500">Prazo: {lance.prazo_entrega} {lance.observacao && `• ${lance.observacao}`}</p>
                     </div>
                     <div className="flex items-center gap-4">

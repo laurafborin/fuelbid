@@ -41,7 +41,7 @@ export default function LeiloesDistribuidoraPage() {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="font-semibold">{l.combustivel}</h3>
-                  <p className="text-xs text-gray-500">{l.posto?.nome_fantasia} • {l.regiao}</p>
+                  <p className="text-xs text-gray-500">{l.posto?.nome} • {l.regiao}</p>
                 </div>
                 <StatusBadge status={l.status} />
               </div>

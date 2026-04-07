@@ -75,7 +75,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div><span className="text-gray-500">Posto</span><p className="font-semibold">{leilao.posto?.nome_fantasia}</p></div>
+              <div><span className="text-gray-500">Posto</span><p className="font-semibold">{leilao.posto?.nome}</p></div>
               <div><span className="text-gray-500">Volume</span><p className="font-semibold">{leilao.volume_litros?.toLocaleString()}L</p></div>
               <div><span className="text-gray-500">Preço Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
               <div><span className="text-gray-500">Status</span><p><StatusBadge status={leilao.status} /></p></div>
@@ -99,7 +99,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
                         {i + 1}
                       </span>
                       <div>
-                        <p className="font-medium text-sm">{lance.distribuidora?.nome_fantasia || 'Distribuidora'}</p>
+                        <p className="font-medium text-sm">{lance.distribuidora?.nome || 'Distribuidora'}</p>
                         <p className="text-xs text-gray-500">Prazo: {lance.prazo_entrega}</p>
                       </div>
                     </div>

@@ -52,7 +52,7 @@ export default function ContratosPostoPage() {
               {contratos.map((c) => (
                 <tr key={c.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">{c.combustivel}</td>
-                  <td className="px-4 py-3">{c.distribuidora?.nome_fantasia}</td>
+                  <td className="px-4 py-3">{c.distribuidora?.nome}</td>
                   <td className="px-4 py-3">{c.volume_litros?.toLocaleString()}L</td>
                   <td className="px-4 py-3">R$ {c.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                   <td className="px-4 py-3"><StatusBadge status={c.status} /></td>

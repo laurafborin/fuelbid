@@ -81,15 +81,15 @@ export default function ContratoDetalhePage({ params }: { params: Promise<{ id: 
         <div className="grid grid-cols-2 gap-6">
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 mb-1">Posto (Comprador)</p>
-            <p className="font-semibold">{contrato.posto?.nome_fantasia}</p>
+            <p className="font-semibold">{contrato.posto?.nome}</p>
             <p className="text-xs text-gray-500">{contrato.posto?.cnpj}</p>
-            <p className="text-xs text-gray-500">{contrato.posto?.endereco}, {contrato.posto?.cidade}/{contrato.posto?.estado}</p>
+            <p className="text-xs text-gray-500">{contrato.posto?.cidade}/{contrato.posto?.estado}</p>
           </div>
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 mb-1">Distribuidora (Vendedor)</p>
-            <p className="font-semibold">{contrato.distribuidora?.nome_fantasia}</p>
+            <p className="font-semibold">{contrato.distribuidora?.nome}</p>
             <p className="text-xs text-gray-500">{contrato.distribuidora?.cnpj}</p>
-            <p className="text-xs text-gray-500">{contrato.distribuidora?.endereco}, {contrato.distribuidora?.cidade}/{contrato.distribuidora?.estado}</p>
+            <p className="text-xs text-gray-500">{contrato.distribuidora?.cidade}/{contrato.distribuidora?.estado}</p>
           </div>
         </div>
 
