@@ -175,9 +175,10 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8 text-center px-6">
-        <p className="text-gray-400 text-sm">
-          FuelBid © 2025 — TCC Laura Borin, Isabela Garcia, Letícia Dias — FGV-EAESP
+        <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+          FuelBid © 2025 — Trabalho de Conclusão de Curso — Escola de Administração de Empresas de São Paulo — Fundação Getulio Vargas (FGV-EAESP) — Isabela Peres Pereira Hildebrandt Garcia, Laura Ferreira Borin, Letícia Gabriel Ferreira Dias
         </p>
+        <Link href="/sobre" className="text-gray-300 hover:text-gray-500 text-xs transition-colors mt-2 inline-block">Sobre o Projeto</Link>
         <div className="mt-3 flex gap-3 justify-center">
           <button
             onClick={handleSetup}

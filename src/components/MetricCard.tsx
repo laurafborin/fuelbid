@@ -1,6 +1,6 @@
 export default function MetricCard({ label, value, icon }: { label: string; value: string | number; icon: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-5 flex items-center gap-4">
+    <div className="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 transition-all duration-200 hover:shadow-md hover:border-brand/20 hover:-translate-y-0.5">
       <span className="text-2xl">{icon}</span>
       <div>
         <p className="text-sm text-gray-500">{label}</p>
