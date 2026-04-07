@@ -16,7 +16,7 @@ export default function PagamentosPostoPage() {
       if (!user) return
       const { data } = await supabase
         .from('pagamentos')
-        .select('*, contrato:contratos(*, leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*)))')
+        .select('*, contrato:contratos(*, leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_dist_id_fkey(*)))')
         .eq('contrato.posto_id', user.id)
         .order('created_at', { ascending: false })
       setPagamentos((data || []).filter((p: Pagamento) => p.contrato))
@@ -41,7 +41,7 @@ export default function PagamentosPostoPage() {
       // Get distribuidora name through the lance
       const { data: lanceData } = await supabase
         .from('lances')
-        .select('user_id, distribuidora:profiles!lances_user_id_fkey(nome)')
+        .select('dist_id, distribuidora:profiles!lances_dist_id_fkey(nome)')
         .eq('id', c.lance_id)
         .single()
 

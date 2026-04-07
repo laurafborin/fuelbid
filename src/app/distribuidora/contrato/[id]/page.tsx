@@ -13,7 +13,7 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
-  const selectQuery = '*, posto:profiles!contratos_posto_id_fkey(*), leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*))'
+  const selectQuery = '*, posto:profiles!contratos_posto_id_fkey(*), leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_dist_id_fkey(*))'
 
   useEffect(() => {
     async function load() {

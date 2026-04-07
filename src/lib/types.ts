@@ -37,7 +37,7 @@ export interface Leilao {
 export interface Lance {
   id: string
   leilao_id: string
-  user_id: string
+  dist_id: string
   preco: number
   prazo: string
   created_at: string

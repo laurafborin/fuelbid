@@ -23,7 +23,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
       setLeilao(l)
       const { data: lancesData } = await supabase
         .from('lances')
-        .select('*, distribuidora:profiles!lances_user_id_fkey(*)')
+        .select('*, distribuidora:profiles!lances_dist_id_fkey(*)')
         .eq('leilao_id', id)
         .order('preco', { ascending: true })
       setLances(lancesData || [])
@@ -49,7 +49,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
 
     await supabase.from('lances').insert({
       leilao_id: id,
-      user_id: user.id,
+      dist_id: user.id,
       preco: parseFloat(preco),
       prazo: parseInt(prazo) || 7,
     })

@@ -17,7 +17,7 @@ export default function ContratosPostoPage() {
       if (!user) return
       const { data } = await supabase
         .from('contratos')
-        .select('*, leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*))')
+        .select('*, leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_dist_id_fkey(*))')
         .eq('posto_id', user.id)
         .order('created_at', { ascending: false })
       setContratos(data || [])

@@ -21,7 +21,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
       setLeilao(l)
       const { data: lancesData } = await supabase
         .from('lances')
-        .select('*, distribuidora:profiles!lances_user_id_fkey(*)')
+        .select('*, distribuidora:profiles!lances_dist_id_fkey(*)')
         .eq('leilao_id', id)
         .order('preco', { ascending: true })
       setLances(lancesData || [])
@@ -47,6 +47,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
       leilao_id: leilao.id,
       lance_id: lance.id,
       posto_id: leilao.posto_id,
+      dist_id: lance.dist_id,
       valor,
       status: 'pendente',
     })

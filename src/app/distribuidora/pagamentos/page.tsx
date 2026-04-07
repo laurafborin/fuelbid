@@ -19,7 +19,7 @@ export default function PagamentosDistribuidoraPage() {
       const { data: userLances } = await supabase
         .from('lances')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('dist_id', user.id)
 
       if (!userLances || userLances.length === 0) {
         setPagamentos([])

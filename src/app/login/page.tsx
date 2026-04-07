@@ -17,91 +17,80 @@ export default function LoginPage() {
     e.preventDefault()
     setErro('')
     setLoading(true)
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password: senha,
-    })
-
-    if (error) {
-      setErro(error.message)
-      setLoading(false)
-      return
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('tipo')
-      .eq('id', data.user.id)
-      .single()
-
-    if (profile?.tipo === 'distribuidora') {
-      router.push('/distribuidora/dashboard')
-    } else {
-      router.push('/posto/dashboard')
-    }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha })
+    if (error) { setErro(error.message); setLoading(false); return }
+    const { data: profile } = await supabase.from('profiles').select('tipo').eq('id', data.user.id).single()
+    router.push(profile?.tipo === 'distribuidora' ? '/distribuidora/dashboard' : '/posto/dashboard')
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="w-12 h-12 bg-brand rounded-2xl flex items-center justify-center text-white font-black text-xl mx-auto">F</div>
-        <h1 className="text-xl font-bold text-center mt-4 text-gray-900">Entrar no FuelBid</h1>
-        <p className="text-sm text-center text-gray-500 mt-1">Marketplace B2B de Combustíveis</p>
+    <div className="min-h-screen flex">
+      {/* Left Panel */}
+      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#E8621A] to-[#C44E10] flex-col justify-center px-16 text-white">
+        <h1 className="text-4xl font-bold leading-tight">Negocie combustíveis<br />com inteligência</h1>
+        <p className="text-lg text-white/80 mt-4">A plataforma que conecta postos independentes às melhores distribuidoras do Brasil.</p>
+        <div className="mt-12 space-y-6">
+          {[
+            { n: '1', t: 'Publique sua demanda', d: 'Defina combustível, volume e preço teto' },
+            { n: '2', t: 'Receba propostas competitivas', d: 'Distribuidoras competem em tempo real' },
+            { n: '3', t: 'Feche negócios com segurança', d: 'Contrato digital, PIX e NF-e automática' },
+          ].map(s => (
+            <div key={s.n} className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold flex-shrink-0">{s.n}</div>
+              <div>
+                <p className="font-semibold">{s.t}</p>
+                <p className="text-sm text-white/70">{s.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mt-6">
-          {erro && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-100 text-red-700 text-sm rounded-xl">{erro}</div>
-          )}
+      {/* Right Panel */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-[#F8F7F4]">
+        <div className="w-full max-w-md">
+          <Link href="/" className="flex items-center justify-center gap-2.5 mb-8">
+            <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">F</div>
+            <span className="text-xl font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+          </Link>
+
+          <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta</h2>
+          <p className="text-gray-500 text-sm mb-8">Acesse sua conta para gerenciar leilões e negociações.</p>
+
+          {erro && <div className="mb-4 p-3 bg-red-50 border border-red-100 text-red-700 text-sm rounded-xl">{erro}</div>}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="seu@email.com"
-                className="w-full h-11 px-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand/10 focus:border-brand outline-none transition-all placeholder:text-gray-300"
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="seu@email.com" className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E8621A]/10 focus:border-[#E8621A] outline-none transition-all text-base placeholder:text-gray-300" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Senha</label>
-              <input
-                type="password"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                required
-                placeholder="••••••"
-                className="w-full h-11 px-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand/10 focus:border-brand outline-none transition-all placeholder:text-gray-300"
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+              <input type="password" value={senha} onChange={e => setSenha(e.target.value)} required placeholder="••••••" className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E8621A]/10 focus:border-[#E8621A] outline-none transition-all text-base placeholder:text-gray-300" />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 bg-brand text-white rounded-xl font-semibold hover:bg-brand-dark disabled:opacity-50 transition-colors"
-            >
+            <button type="submit" disabled={loading} className="w-full h-12 bg-[#E8621A] hover:bg-[#C44E10] text-white font-semibold rounded-xl text-base transition-all hover:shadow-lg hover:shadow-[#E8621A]/20 disabled:opacity-50 active:scale-[0.98]">
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </form>
 
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-100" />
-            <span className="text-xs text-gray-400">ou</span>
-            <div className="flex-1 h-px bg-gray-100" />
+          <div className="border-t border-gray-100 mt-8 pt-6">
+            <p className="text-sm text-gray-400 mb-3">Contas de demonstração:</p>
+            <div className="bg-[#FFF1E8] rounded-xl p-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">posto@fuelbid.com</span>
+                <span className="text-xs bg-white rounded-lg px-2 py-1 text-gray-400 font-mono">123456</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">distribuidora@fuelbid.com</span>
+                <span className="text-xs bg-white rounded-lg px-2 py-1 text-gray-400 font-mono">123456</span>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-[#FFF1E8] rounded-xl p-4 text-sm space-y-1.5">
-            <p className="text-xs font-semibold text-brand mb-2">Credenciais Demo</p>
-            <p className="text-xs text-gray-600"><span className="font-medium">Posto:</span> posto@fuelbid.com / 123456</p>
-            <p className="text-xs text-gray-600"><span className="font-medium">Distribuidora:</span> distribuidora@fuelbid.com / 123456</p>
+          <div className="flex justify-between mt-6 text-sm">
+            <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors">← Voltar</Link>
+            <Link href="/cadastro" className="text-[#E8621A] font-medium hover:underline">Criar conta</Link>
           </div>
-        </div>
-
-        <div className="flex justify-between mt-5 text-sm">
-          <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors">← Voltar</Link>
-          <Link href="/cadastro" className="text-brand font-medium hover:underline">Criar conta</Link>
         </div>
       </div>
     </div>

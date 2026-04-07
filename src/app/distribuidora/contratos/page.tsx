@@ -20,7 +20,7 @@ export default function ContratosDistribuidoraPage() {
       const { data: userLances } = await supabase
         .from('lances')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('dist_id', user.id)
 
       if (!userLances || userLances.length === 0) {
         setContratos([])
@@ -31,7 +31,7 @@ export default function ContratosDistribuidoraPage() {
       const lanceIds = userLances.map(l => l.id)
       const { data } = await supabase
         .from('contratos')
-        .select('*, posto:profiles!contratos_posto_id_fkey(*), leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*))')
+        .select('*, posto:profiles!contratos_posto_id_fkey(*), leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_dist_id_fkey(*))')
         .in('lance_id', lanceIds)
         .order('created_at', { ascending: false })
       setContratos(data || [])
