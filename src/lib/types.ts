@@ -24,7 +24,7 @@ export interface Leilao {
   combustivel: string
   volume: number
   preco_teto: number
-  prazo_entrega: string
+  prazo_entrega: number
   regiao: string
   forma_pagamento: string
   tipo_compra: string
@@ -39,7 +39,8 @@ export interface Lance {
   leilao_id: string
   dist_id: string
   preco: number
-  prazo: string
+  prazo: number
+  observacoes: string
   created_at: string
   distribuidora?: Profile
 }
@@ -49,13 +50,17 @@ export interface Contrato {
   leilao_id: string
   lance_id: string
   posto_id: string
+  dist_id: string
   valor: number
+  clausulas: string[] | null
+  hash_contrato: string | null
   assinatura_posto: string | null
   assinatura_dist: string | null
-  status: 'pendente' | 'assinado_posto' | 'assinado_distribuidora' | 'assinado' | 'concluido'
+  assinado_posto_em: string | null
+  assinado_dist_em: string | null
+  status: string
   created_at: string
   posto?: Profile
-  distribuidora?: Profile
   leilao?: Leilao
   lance?: Lance
 }
@@ -64,7 +69,9 @@ export interface Pagamento {
   id: string
   contrato_id: string
   valor: number
-  status: 'pendente' | 'confirmado'
+  status: string
+  metodo: string
+  pago_em: string | null
   created_at: string
   contrato?: Contrato
 }
@@ -72,6 +79,9 @@ export interface Pagamento {
 export interface Nfe {
   id: string
   contrato_id: string
+  numero: number
+  serie: number
+  data_emissao: string
   chave_acesso: string
   valor_total: number
   icms: number
@@ -81,15 +91,14 @@ export interface Nfe {
   destinatario: string
   combustivel: string
   volume: number
+  status: string
   created_at: string
 }
 
 export interface Avaliacao {
   id: string
   contrato_id: string
-  avaliador_id: string
-  avaliado_id: string
-  nota: number
+  rating: number
   comentario: string
   created_at: string
 }

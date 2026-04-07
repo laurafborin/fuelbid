@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Nfe } from '@/lib/types'
+import StatusBadge from '@/components/StatusBadge'
 
-export default function NfesDistribuidoraPage() {
+export default function NfesDistPage() {
   const [nfes, setNfes] = useState<Nfe[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
@@ -13,68 +14,69 @@ export default function NfesDistribuidoraPage() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-
-      // Get contratos through lances (distribuidora_id doesn't exist on contratos)
-      const { data: userLances } = await supabase
-        .from('lances')
-        .select('id')
-        .eq('dist_id', user.id)
-
-      if (!userLances || userLances.length === 0) {
-        setLoading(false)
-        return
-      }
-
-      const lanceIds = userLances.map(l => l.id)
-      const { data: contratos } = await supabase
-        .from('contratos')
-        .select('id')
-        .in('lance_id', lanceIds)
-
-      if (!contratos || contratos.length === 0) { setLoading(false); return }
-      const ids = contratos.map(c => c.id)
-      const { data } = await supabase.from('nfes').select('*').in('contrato_id', ids).order('created_at', { ascending: false })
+      const { data: contratos } = await supabase.from('contratos').select('id').eq('dist_id', user.id)
+      if (!contratos?.length) { setLoading(false); return }
+      const { data } = await supabase.from('nfes').select('*').in('contrato_id', contratos.map(c => c.id)).order('created_at', { ascending: false })
       setNfes(data || [])
       setLoading(false)
     }
     load()
   }, [])
 
-  if (loading) return <p className="text-gray-500">Carregando...</p>
-
-  const valorLiquido = (nf: Nfe) => nf.valor_total - nf.icms - nf.pis - nf.cofins
+  if (loading) return <div className="h-40 bg-gray-100 rounded-2xl animate-pulse" />
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Notas Fiscais Eletrônicas</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Notas Fiscais Eletronicas</h1>
       {nfes.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-          <p className="text-gray-500">Nenhuma NF-e emitida</p>
+        <div className="flex flex-col items-center py-20 bg-white rounded-2xl border border-gray-100">
+          <svg width="48" height="48" className="text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+          <p className="text-lg font-medium text-gray-400 mt-4">Nenhuma nota fiscal emitida</p>
+          <p className="text-sm text-gray-300">NF-es sao geradas automaticamente apos confirmacao do pagamento</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {nfes.map((nf) => (
-            <div key={nf.id} className="bg-white rounded-xl border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="font-semibold">{nf.combustivel} — {nf.volume?.toLocaleString()}L</p>
-                  <p className="text-xs text-gray-500">Emitente: {nf.emitente} → Destinatario: {nf.destinatario}</p>
+        <div className="space-y-6">
+          {nfes.map(nf => {
+            const valorLiquido = nf.valor_total - nf.icms - nf.pis - nf.cofins
+            return (
+              <div key={nf.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div className="bg-gray-50 px-6 py-4 flex justify-between items-center border-b border-gray-100">
+                  <div><span className="text-xs text-gray-400">NF-e</span><p className="text-lg font-bold font-mono">#{String(nf.numero || '').padStart(6, '0')}</p></div>
+                  <div className="flex items-center gap-3">
+                    <StatusBadge status={nf.status || 'emitida'} />
+                    {nf.data_emissao && <span className="text-xs text-gray-400">{new Date(nf.data_emissao).toLocaleDateString('pt-BR')}</span>}
+                  </div>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Emitida</span>
+                <div className="px-6 py-5">
+                  <div className="grid grid-cols-2 gap-6 mb-5 pb-5 border-b border-gray-100">
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Emitente</p><p className="text-sm font-semibold mt-1">{nf.emitente}</p></div>
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Destinatario</p><p className="text-sm font-semibold mt-1">{nf.destinatario}</p></div>
+                  </div>
+                  <div className="grid grid-cols-4 gap-4 mb-5 pb-5 border-b border-gray-100">
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Produto</p><p className="text-sm font-semibold mt-1">{nf.combustivel}</p></div>
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Volume</p><p className="text-sm font-semibold mt-1">{nf.volume?.toLocaleString()} L</p></div>
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Preco/L</p><p className="text-sm font-semibold mt-1">R$ {(nf.valor_total / (nf.volume || 1)).toFixed(3)}</p></div>
+                    <div><p className="text-[10px] uppercase tracking-widest text-gray-400">Valor Total</p><p className="text-sm font-bold text-[#E8621A] mt-1">R$ {nf.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Tributos</p>
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                      <div><p className="text-[10px] text-gray-400">Base</p><p className="text-sm font-semibold">R$ {nf.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                      <div><p className="text-[10px] text-gray-400">ICMS 18%</p><p className="text-sm font-semibold text-red-600">R$ {nf.icms?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                      <div><p className="text-[10px] text-gray-400">PIS 1,65%</p><p className="text-sm font-semibold">R$ {nf.pis?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                      <div><p className="text-[10px] text-gray-400">COFINS 7,6%</p><p className="text-sm font-semibold">R$ {nf.cofins?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                      <div><p className="text-[10px] text-gray-400">CIDE 1%</p><p className="text-sm font-semibold">R$ {(nf.valor_total * 0.01)?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                      <div><p className="text-[10px] text-gray-400">Liquido</p><p className="text-sm font-semibold text-green-700">R$ {valorLiquido?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400">Chave de Acesso</p>
+                  <p className="font-mono text-[11px] text-gray-500 tracking-wide break-all">{nf.chave_acesso}</p>
+                </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-                <div><span className="text-gray-500">Valor Total</span><p className="font-semibold">R$ {nf.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
-                <div><span className="text-gray-500">ICMS (18%)</span><p className="font-semibold text-red-600">R$ {nf.icms?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
-                <div><span className="text-gray-500">PIS (1,65%)</span><p className="font-semibold text-red-600">R$ {nf.pis?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
-                <div><span className="text-gray-500">COFINS (7,6%)</span><p className="font-semibold text-red-600">R$ {nf.cofins?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
-                <div><span className="text-gray-500">Valor Liquido</span><p className="font-semibold text-green-700">R$ {valorLiquido(nf)?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>
-              </div>
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500">Chave de Acesso (44 digitos)</p>
-                <p className="text-xs font-mono text-gray-700 break-all">{nf.chave_acesso}</p>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>
