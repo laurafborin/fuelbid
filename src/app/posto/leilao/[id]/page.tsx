@@ -57,7 +57,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
   }
 
   if (loading) return <p className="text-gray-500">Carregando...</p>
-  if (!leilao) return <p className="text-gray-500">Leilao nao encontrado</p>
+  if (!leilao) return <p className="text-gray-500">Leilao não encontrado</p>
 
   const mapPoints = lances
     .filter(l => l.distribuidora)
@@ -65,15 +65,15 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilao — {leilao.combustivel}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilão — {leilao.combustivel}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div><span className="text-gray-500">Volume</span><p className="font-semibold">{leilao.volume?.toLocaleString()}L</p></div>
-              <div><span className="text-gray-500">Preco Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
-              <div><span className="text-gray-500">Regiao</span><p className="font-semibold">{leilao.regiao}</p></div>
+              <div><span className="text-gray-500">Preço Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
+              <div><span className="text-gray-500">Região</span><p className="font-semibold">{leilao.regiao}</p></div>
               <div><span className="text-gray-500">Status</span><p><StatusBadge status={leilao.status} /></p></div>
               <div><span className="text-gray-500">Prazo Entrega</span><p className="font-semibold">{leilao.prazo_entrega}</p></div>
               <div><span className="text-gray-500">Pagamento</span><p className="font-semibold">{leilao.forma_pagamento}</p></div>

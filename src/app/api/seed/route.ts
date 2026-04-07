@@ -50,7 +50,7 @@ export async function POST() {
         combustivel: 'Diesel S10',
         volume: 15000,
         preco_teto: 5.89,
-        prazo_entrega: new Date(now.getTime() + 7 * 86400000).toISOString().split('T')[0],
+        prazo_entrega: 7,
         regiao: 'São Paulo - Capital',
         forma_pagamento: 'PIX',
         tipo_compra: 'spot',
@@ -83,25 +83,25 @@ export async function POST() {
         leilao_id: leilao1Id,
         user_id: dist1Id,
         preco: 5.72,
-        prazo: new Date(now.getTime() + 5 * 86400000).toISOString().split('T')[0],
+        prazo: 5,
       },
       {
         leilao_id: leilao1Id,
         user_id: dist2Id,
         preco: 5.65,
-        prazo: new Date(now.getTime() + 6 * 86400000).toISOString().split('T')[0],
+        prazo: 6,
       },
       {
         leilao_id: leilao2Id,
         user_id: dist1Id,
         preco: 5.32,
-        prazo: new Date(now.getTime() + 8 * 86400000).toISOString().split('T')[0],
+        prazo: 8,
       },
       {
         leilao_id: leilao2Id,
         user_id: dist2Id,
         preco: 5.38,
-        prazo: new Date(now.getTime() + 9 * 86400000).toISOString().split('T')[0],
+        prazo: 9,
       },
     ]).select('id')
 

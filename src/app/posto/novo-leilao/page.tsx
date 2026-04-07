@@ -32,7 +32,7 @@ export default function NovoLeilao() {
       combustivel,
       volume: parseInt(volume),
       preco_teto: parseFloat(precoTeto),
-      prazo_entrega: prazoEntrega,
+      prazo_entrega: parseInt(prazoEntrega) || 7,
       regiao,
       forma_pagamento: pagamento,
       tipo_compra: tipoCompra,
@@ -51,11 +51,11 @@ export default function NovoLeilao() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Novo Leilao</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Novo Leilão</h1>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Combustivel</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Combustível</label>
           <select value={combustivel} onChange={e => setCombustivel(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand">
             <option>Gasolina Comum</option>
             <option>Gasolina Aditivada</option>
@@ -72,18 +72,18 @@ export default function NovoLeilao() {
             <input type="number" value={volume} onChange={e => setVolume(e.target.value)} required min="1" className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Preco Teto (R$/L)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Preço Teto (R$/L)</label>
             <input type="number" step="0.01" value={precoTeto} onChange={e => setPrecoTeto(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand" />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Prazo de Entrega</label>
-            <input type="date" value={prazoEntrega} onChange={e => setPrazoEntrega(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand" />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Prazo de Entrega (dias)</label>
+            <input type="number" min="1" max="90" value={prazoEntrega} onChange={e => setPrazoEntrega(e.target.value)} required placeholder="7" className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Duracao do Leilao (horas)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Duração do Leilão (horas)</label>
             <select value={duracao} onChange={e => setDuracao(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand">
               <option value="6">6 horas</option>
               <option value="12">12 horas</option>
@@ -95,13 +95,13 @@ export default function NovoLeilao() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Regiao</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Região</label>
           <select value={regiao} onChange={e => setRegiao(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand">
             <option>São Paulo - Capital</option>
             <option>São Paulo - Interior</option>
             <option>Rio de Janeiro</option>
             <option>Minas Gerais</option>
-            <option>Parana</option>
+            <option>Paraná</option>
             <option>Santa Catarina</option>
             <option>Rio Grande do Sul</option>
           </select>
@@ -119,14 +119,14 @@ export default function NovoLeilao() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Compra</label>
             <select value={tipoCompra} onChange={e => setTipoCompra(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-brand">
-              <option value="spot">Spot (unica)</option>
+              <option value="spot">Spot (única)</option>
               <option value="recorrente">Recorrente</option>
             </select>
           </div>
         </div>
 
         <button type="submit" disabled={loading} className="w-full py-2.5 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark disabled:opacity-50">
-          {loading ? 'Criando...' : 'Publicar Leilao'}
+          {loading ? 'Criando...' : 'Publicar Leilão'}
         </button>
       </form>
     </div>

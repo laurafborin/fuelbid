@@ -51,7 +51,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
       leilao_id: id,
       user_id: user.id,
       preco: parseFloat(preco),
-      prazo,
+      prazo: parseInt(prazo) || 7,
     })
 
     setPreco('')
@@ -60,13 +60,13 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
   }
 
   if (loading) return <p className="text-gray-500">Carregando...</p>
-  if (!leilao) return <p className="text-gray-500">Leilao nao encontrado</p>
+  if (!leilao) return <p className="text-gray-500">Leilao não encontrado</p>
 
   const margem = preco ? ((leilao.preco_teto - parseFloat(preco)) / leilao.preco_teto * 100) : 0
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilao — {leilao.combustivel}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilão — {leilao.combustivel}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -74,9 +74,9 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div><span className="text-gray-500">Posto</span><p className="font-semibold">{leilao.posto?.nome}</p></div>
               <div><span className="text-gray-500">Volume</span><p className="font-semibold">{leilao.volume?.toLocaleString()}L</p></div>
-              <div><span className="text-gray-500">Preco Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
+              <div><span className="text-gray-500">Preço Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
               <div><span className="text-gray-500">Status</span><p><StatusBadge status={leilao.status} /></p></div>
-              <div><span className="text-gray-500">Regiao</span><p className="font-semibold">{leilao.regiao}</p></div>
+              <div><span className="text-gray-500">Região</span><p className="font-semibold">{leilao.regiao}</p></div>
               <div><span className="text-gray-500">Prazo</span><p className="font-semibold">{leilao.prazo_entrega}</p></div>
               <div><span className="text-gray-500">Pagamento</span><p className="font-semibold">{leilao.forma_pagamento}</p></div>
               <div><span className="text-gray-500">Tempo</span><p><Countdown endDate={leilao.deadline} /></p></div>
@@ -117,7 +117,7 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
               <h3 className="font-semibold mb-4">Dar Lance</h3>
               <form onSubmit={enviarLance} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Preco por Litro (R$)</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Preço por Litro (R$)</label>
                   <input type="number" step="0.001" value={preco} onChange={e => setPreco(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-brand" />
                   {preco && (
                     <p className={`text-xs mt-1 ${margem > 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -126,8 +126,8 @@ export default function DistribuidoraLeilaoPage({ params }: { params: Promise<{ 
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Prazo de Entrega</label>
-                  <input type="date" value={prazo} onChange={e => setPrazo(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-brand" />
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Prazo de Entrega (dias)</label>
+                  <input type="number" min="1" max="90" value={prazo} onChange={e => setPrazo(e.target.value)} required placeholder="7" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-brand" />
                 </div>
                 <button type="submit" disabled={sending} className="w-full py-2 bg-brand text-white rounded-lg text-sm font-semibold hover:bg-brand-dark disabled:opacity-50">
                   {sending ? 'Enviando...' : 'Enviar Lance'}

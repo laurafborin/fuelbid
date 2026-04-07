@@ -61,10 +61,10 @@ export default function DistribuidoraDashboard() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Combustivel</th>
+                <th className="text-left px-4 py-3 font-medium">Combustível</th>
                 <th className="text-left px-4 py-3 font-medium">Volume</th>
-                <th className="text-left px-4 py-3 font-medium">Preco Teto</th>
-                <th className="text-left px-4 py-3 font-medium">Regiao</th>
+                <th className="text-left px-4 py-3 font-medium">Preço Teto</th>
+                <th className="text-left px-4 py-3 font-medium">Região</th>
                 <th className="text-left px-4 py-3 font-medium">Tempo</th>
                 <th className="text-left px-4 py-3 font-medium">Status</th>
                 <th className="text-left px-4 py-3 font-medium"></th>

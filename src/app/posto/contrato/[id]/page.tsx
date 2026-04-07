@@ -63,7 +63,7 @@ export default function ContratoDetalhePage({ params }: { params: Promise<{ id: 
   }
 
   if (loading) return <p className="text-gray-500">Carregando...</p>
-  if (!contrato) return <p className="text-gray-500">Contrato nao encontrado</p>
+  if (!contrato) return <p className="text-gray-500">Contrato não encontrado</p>
 
   return (
     <div className="max-w-3xl">
@@ -93,13 +93,13 @@ export default function ContratoDetalhePage({ params }: { params: Promise<{ id: 
         </div>
 
         <div className="border-t border-gray-100 pt-4">
-          <h3 className="font-semibold mb-3">Clausulas</h3>
+          <h3 className="font-semibold mb-3">Cláusulas</h3>
           <div className="text-sm text-gray-700 space-y-2">
-            <p>1. O presente contrato refere-se a compra de <strong>{contrato.leilao?.volume?.toLocaleString()} litros</strong> de <strong>{contrato.leilao?.combustivel}</strong>.</p>
-            <p>2. Preco acordado: <strong>R$ {contrato.lance?.preco?.toFixed(3)}/L</strong>, totalizando <strong>R$ {contrato.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>.</p>
-            <p>3. A entrega devera ser realizada conforme prazo estabelecido no leilao original.</p>
-            <p>4. O pagamento sera efetuado via PIX apos assinatura de ambas as partes.</p>
-            <p>5. Ambas as partes concordam com os termos e condicoes da plataforma FuelBid.</p>
+            <p>1. O presente contrato refere-se à compra de <strong>{contrato.leilao?.volume?.toLocaleString()} litros</strong> de <strong>{contrato.leilao?.combustivel}</strong>.</p>
+            <p>2. Preço acordado: <strong>R$ {contrato.lance?.preco?.toFixed(3)}/L</strong>, totalizando <strong>R$ {contrato.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>.</p>
+            <p>3. A entrega deverá ser realizada conforme prazo estabelecido no leilao original.</p>
+            <p>4. O pagamento será efetuado via PIX após assinatura de ambas as partes.</p>
+            <p>5. Ambas as partes concordam com os termos e condições da plataforma FuelBid.</p>
           </div>
         </div>
 

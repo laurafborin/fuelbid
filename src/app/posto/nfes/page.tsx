@@ -29,7 +29,7 @@ export default function NfesPostoPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Notas Fiscais Eletronicas</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Notas Fiscais Eletrônicas</h1>
       {nfes.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
           <p className="text-gray-500">Nenhuma NF-e emitida</p>

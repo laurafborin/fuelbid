@@ -54,7 +54,7 @@ export default function ContratosDistribuidoraPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Combustivel</th>
+                <th className="text-left px-4 py-3 font-medium">Combustível</th>
                 <th className="text-left px-4 py-3 font-medium">Posto</th>
                 <th className="text-left px-4 py-3 font-medium">Volume</th>
                 <th className="text-left px-4 py-3 font-medium">Valor Total</th>
