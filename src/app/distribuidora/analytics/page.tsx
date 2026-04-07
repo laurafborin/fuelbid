@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import MetricCard from '@/components/MetricCard'
+import { Icons } from '@/components/SvgIcons'
 import { SkeletonMetric, SkeletonCard } from '@/components/Skeleton'
 
 const regionPerformance = [
@@ -77,10 +78,10 @@ export default function AnalyticsPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <MetricCard label="Marketshare" value="34.2%" icon="📊" />
-            <MetricCard label="Volume Negociado" value={`${(totalReceita / 5.5).toLocaleString('pt-BR', { maximumFractionDigits: 0 })} L`} icon="🚛" />
-            <MetricCard label="Receita Acumulada" value={`R$ ${totalReceita.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`} icon="💰" />
-            <MetricCard label="Taxa de Conversão" value={`${contratos.length} deals`} icon="🎯" />
+            <MetricCard label="Marketshare" value="34.2%" icon={Icons.pie} iconBg="bg-[#FFF1E8] text-[#E8621A]" />
+            <MetricCard label="Volume Negociado" value={`${(totalReceita / 5.5).toLocaleString('pt-BR', { maximumFractionDigits: 0 })} L`} icon={Icons.truck} iconBg="bg-blue-50 text-blue-400" />
+            <MetricCard label="Receita Acumulada" value={`R$ ${totalReceita.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`} icon={Icons.dollar} iconBg="bg-green-50 text-green-400" />
+            <MetricCard label="Taxa de Conversão" value={`${contratos.length} deals`} icon={Icons.target} iconBg="bg-purple-50 text-purple-400" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
@@ -182,7 +183,7 @@ export default function AnalyticsPage() {
 
           {/* Insights IA */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 transition-all duration-200 hover:shadow-md">
-            <h2 className="font-semibold mb-4">💡 Recomendações Estratégicas</h2>
+            <h2 className="font-semibold mb-4">Recomendações Estratégicas</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {insights.map((insight, i) => (
                 <div key={i} className={`p-4 rounded-xl ${insightStyles[insight.tipo]}`}>

@@ -6,6 +6,7 @@ import type { Leilao } from '@/lib/types'
 import MetricCard from '@/components/MetricCard'
 import Countdown from '@/components/Countdown'
 import StatusBadge from '@/components/StatusBadge'
+import { Icons } from '@/components/SvgIcons'
 import { SkeletonMetric, SkeletonCard } from '@/components/Skeleton'
 import Link from 'next/link'
 
@@ -30,7 +31,7 @@ export default function DistribuidoraDashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">Dashboard</h1>
 
       {loading ? (
         <div className="space-y-6">
@@ -39,21 +40,19 @@ export default function DistribuidoraDashboard() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <MetricCard label="Oportunidades" value={leiloes.length} icon="🔥" />
-            <MetricCard label="Lances Enviados" value={lanceCount} icon="🎯" />
-            <MetricCard label="Contratos Ativos" value="--" icon="📄" />
-            <MetricCard label="Reputação" value="4.7" icon="⭐" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <MetricCard label="Oportunidades" value={leiloes.length} icon={Icons.fire} iconBg="bg-red-50 text-red-400" />
+            <MetricCard label="Lances Enviados" value={lanceCount} icon={Icons.target} iconBg="bg-purple-50 text-purple-400" />
+            <MetricCard label="Contratos" value="--" icon={Icons.file} iconBg="bg-blue-50 text-blue-400" />
+            <MetricCard label="Reputação" value="4.7" icon={Icons.star} iconBg="bg-amber-50 text-amber-400" />
           </div>
 
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Leilões Disponíveis</h2>
           {leiloes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 gap-4 bg-white rounded-2xl border border-gray-100">
-              <svg className="w-16 h-16 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
-              </svg>
+            <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white rounded-2xl border border-gray-100">
+              <div className="text-gray-200">{Icons.radar}</div>
               <p className="text-lg font-medium text-gray-400">Nenhuma oportunidade disponível no momento</p>
-              <p className="text-sm text-gray-300">Novos leilões de postos independentes aparecem aqui em tempo real</p>
+              <p className="text-sm text-gray-300 max-w-sm text-center">Novos leilões de postos independentes aparecem aqui em tempo real</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -77,7 +76,6 @@ export default function DistribuidoraDashboard() {
             </div>
           )}
 
-          {/* Resumo Rápido */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { label: 'Taxa de Conversão', value: `${lanceCount > 0 ? Math.round(Math.random() * 30 + 15) : 0}%` },
