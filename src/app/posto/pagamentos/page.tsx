@@ -16,7 +16,7 @@ export default function PagamentosPostoPage() {
       if (!user) return
       const { data } = await supabase
         .from('pagamentos')
-        .select('*, contrato:contratos(*)')
+        .select('*, contrato:contratos(*, leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*)))')
         .eq('contrato.posto_id', user.id)
         .order('created_at', { ascending: false })
       setPagamentos((data || []).filter((p: Pagamento) => p.contrato))
@@ -30,29 +30,32 @@ export default function PagamentosPostoPage() {
 
     if (pagamento.contrato) {
       const c = pagamento.contrato
-      const valorTotal = c.valor_total
+      const valorTotal = c.valor
       const icms = valorTotal * 0.18
       const pis = valorTotal * 0.0165
       const cofins = valorTotal * 0.076
-      const valorLiquido = valorTotal - icms - pis - cofins
       const chave = Array.from({ length: 44 }, () => Math.floor(Math.random() * 10)).join('')
 
       const { data: postoPerfil } = await supabase.from('profiles').select('nome').eq('id', c.posto_id).single()
-      const { data: distPerfil } = await supabase.from('profiles').select('nome').eq('id', c.distribuidora_id).single()
+
+      // Get distribuidora name through the lance
+      const { data: lanceData } = await supabase
+        .from('lances')
+        .select('user_id, distribuidora:profiles!lances_user_id_fkey(nome)')
+        .eq('id', c.lance_id)
+        .single()
 
       await supabase.from('nfes').insert({
         contrato_id: c.id,
-        pagamento_id: pagamento.id,
         chave_acesso: chave,
         valor_total: valorTotal,
         icms,
         pis,
         cofins,
-        valor_liquido: valorLiquido,
-        emitente: distPerfil?.nome || '',
+        emitente: (lanceData?.distribuidora as unknown as { nome: string } | null)?.nome || '',
         destinatario: postoPerfil?.nome || '',
-        combustivel: c.combustivel,
-        volume_litros: c.volume_litros,
+        combustivel: c.leilao?.combustivel || '',
+        volume: c.leilao?.volume || 0,
       })
 
       await supabase.from('contratos').update({ status: 'concluido' }).eq('id', c.id)
@@ -78,7 +81,7 @@ export default function PagamentosPostoPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="font-semibold">R$ {p.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                  <p className="text-xs text-gray-500">{p.contrato?.combustivel} • {p.contrato?.volume_litros?.toLocaleString()}L</p>
+                  <p className="text-xs text-gray-500">{p.contrato?.leilao?.combustivel} - {p.contrato?.leilao?.volume?.toLocaleString()}L</p>
                 </div>
                 <StatusBadge status={p.status} />
               </div>
@@ -93,7 +96,6 @@ export default function PagamentosPostoPage() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-2 font-mono break-all">{p.pix_code?.slice(0, 60)}...</p>
                   </div>
                   <button onClick={() => confirmar(p)} className="w-full py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-dark">
                     Confirmar Pagamento

@@ -21,9 +21,9 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
       setLeilao(l)
       const { data: lancesData } = await supabase
         .from('lances')
-        .select('*, distribuidora:profiles(*)')
+        .select('*, distribuidora:profiles!lances_user_id_fkey(*)')
         .eq('leilao_id', id)
-        .order('preco_litro', { ascending: true })
+        .order('preco', { ascending: true })
       setLances(lancesData || [])
       setLoading(false)
     }
@@ -32,7 +32,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
     const channel = supabase
       .channel(`lances-${id}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'lances', filter: `leilao_id=eq.${id}` }, (payload) => {
-        setLances(prev => [...prev, payload.new as Lance].sort((a, b) => a.preco_litro - b.preco_litro))
+        setLances(prev => [...prev, payload.new as Lance].sort((a, b) => a.preco - b.preco))
       })
       .subscribe()
 
@@ -41,21 +41,13 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
 
   async function aceitarLance(lance: Lance) {
     if (!leilao) return
-    const valorTotal = lance.preco_litro * leilao.volume_litros
-    const raw = `${leilao.id}|${lance.id}|${valorTotal}|${new Date().toISOString()}`
-    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw))
-    const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
+    const valor = lance.preco * leilao.volume
 
     await supabase.from('contratos').insert({
       leilao_id: leilao.id,
       lance_id: lance.id,
       posto_id: leilao.posto_id,
-      distribuidora_id: lance.distribuidora_id,
-      valor_total: valorTotal,
-      volume_litros: leilao.volume_litros,
-      preco_litro: lance.preco_litro,
-      combustivel: leilao.combustivel,
-      hash_sha256: hash,
+      valor,
       status: 'pendente',
     })
 
@@ -65,7 +57,7 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
   }
 
   if (loading) return <p className="text-gray-500">Carregando...</p>
-  if (!leilao) return <p className="text-gray-500">Leilão não encontrado</p>
+  if (!leilao) return <p className="text-gray-500">Leilao nao encontrado</p>
 
   const mapPoints = lances
     .filter(l => l.distribuidora)
@@ -73,20 +65,20 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilão — {leilao.combustivel}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Leilao — {leilao.combustivel}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div><span className="text-gray-500">Volume</span><p className="font-semibold">{leilao.volume_litros?.toLocaleString()}L</p></div>
-              <div><span className="text-gray-500">Preço Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
-              <div><span className="text-gray-500">Região</span><p className="font-semibold">{leilao.regiao}</p></div>
+              <div><span className="text-gray-500">Volume</span><p className="font-semibold">{leilao.volume?.toLocaleString()}L</p></div>
+              <div><span className="text-gray-500">Preco Teto</span><p className="font-semibold">R$ {leilao.preco_teto?.toFixed(2)}</p></div>
+              <div><span className="text-gray-500">Regiao</span><p className="font-semibold">{leilao.regiao}</p></div>
               <div><span className="text-gray-500">Status</span><p><StatusBadge status={leilao.status} /></p></div>
               <div><span className="text-gray-500">Prazo Entrega</span><p className="font-semibold">{leilao.prazo_entrega}</p></div>
               <div><span className="text-gray-500">Pagamento</span><p className="font-semibold">{leilao.forma_pagamento}</p></div>
               <div><span className="text-gray-500">Tipo</span><p className="font-semibold">{leilao.tipo_compra}</p></div>
-              <div><span className="text-gray-500">Tempo</span><p><Countdown endDate={leilao.end_time} /></p></div>
+              <div><span className="text-gray-500">Tempo</span><p><Countdown endDate={leilao.deadline} /></p></div>
             </div>
           </div>
 
@@ -100,12 +92,12 @@ export default function LeilaoDetalhePage({ params }: { params: Promise<{ id: st
                   <div key={lance.id} className={`flex items-center justify-between p-4 rounded-lg border ${i === 0 ? 'border-brand bg-brand/5' : 'border-gray-100'}`}>
                     <div>
                       <p className="font-semibold text-sm">{lance.distribuidora?.nome || 'Distribuidora'}</p>
-                      <p className="text-xs text-gray-500">Prazo: {lance.prazo_entrega} {lance.observacao && `• ${lance.observacao}`}</p>
+                      <p className="text-xs text-gray-500">Prazo: {lance.prazo}</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="font-bold text-lg">R$ {lance.preco_litro?.toFixed(3)}</p>
-                        <p className="text-xs text-gray-500">Total: R$ {(lance.preco_litro * leilao.volume_litros).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        <p className="font-bold text-lg">R$ {lance.preco?.toFixed(3)}</p>
+                        <p className="text-xs text-gray-500">Total: R$ {(lance.preco * leilao.volume).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                       </div>
                       {leilao.status === 'aberto' && (
                         <button onClick={() => aceitarLance(lance)} className="px-3 py-1.5 text-xs bg-brand text-white rounded-lg hover:bg-brand-dark">

@@ -13,11 +13,13 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
+  const selectQuery = '*, posto:profiles!contratos_posto_id_fkey(*), leilao:leiloes(*), lance:lances(*, distribuidora:profiles!lances_user_id_fkey(*))'
+
   useEffect(() => {
     async function load() {
       const { data } = await supabase
         .from('contratos')
-        .select('*, posto:profiles!contratos_posto_id_fkey(*), distribuidora:profiles!contratos_distribuidora_id_fkey(*)')
+        .select(selectQuery)
         .eq('id', id)
         .single()
       setContrato(data)
@@ -32,10 +34,10 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
     if (!user) return
 
     const isPosto = user.id === contrato.posto_id
-    const field = isPosto ? 'assinatura_posto' : 'assinatura_distribuidora'
+    const field = isPosto ? 'assinatura_posto' : 'assinatura_dist'
     const updates: Record<string, string> = { [field]: dataUrl }
 
-    const otherSigned = isPosto ? contrato.assinatura_distribuidora : contrato.assinatura_posto
+    const otherSigned = isPosto ? contrato.assinatura_dist : contrato.assinatura_posto
     if (otherSigned) {
       updates.status = 'assinado'
     } else {
@@ -45,24 +47,22 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
     await supabase.from('contratos').update(updates).eq('id', id)
 
     if (updates.status === 'assinado') {
-      const pixCode = `00020126580014br.gov.bcb.pix0136${crypto.randomUUID()}5204000053039865802BR5925FUELBID6009SAO PAULO62070503***6304`
       await supabase.from('pagamentos').insert({
         contrato_id: id,
-        valor: contrato.valor_total,
+        valor: contrato.valor,
         status: 'pendente',
-        pix_code: pixCode,
       })
     }
 
     const { data: updated } = await supabase.from('contratos')
-      .select('*, posto:profiles!contratos_posto_id_fkey(*), distribuidora:profiles!contratos_distribuidora_id_fkey(*)')
+      .select(selectQuery)
       .eq('id', id).single()
     setContrato(updated)
     alert('Assinatura salva!')
   }
 
   if (loading) return <p className="text-gray-500">Carregando...</p>
-  if (!contrato) return <p className="text-gray-500">Contrato não encontrado</p>
+  if (!contrato) return <p className="text-gray-500">Contrato nao encontrado</p>
 
   return (
     <div className="max-w-3xl">
@@ -74,7 +74,6 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
             <p className="text-sm text-gray-500">Status</p>
             <StatusBadge status={contrato.status} />
           </div>
-          <p className="text-xs text-gray-400 font-mono break-all max-w-xs">SHA-256: {contrato.hash_sha256}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-6">
@@ -85,17 +84,17 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
           </div>
           <div className="p-4 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 mb-1">Distribuidora (Vendedor)</p>
-            <p className="font-semibold">{contrato.distribuidora?.nome}</p>
-            <p className="text-xs text-gray-500">{contrato.distribuidora?.cnpj}</p>
+            <p className="font-semibold">{contrato.lance?.distribuidora?.nome}</p>
+            <p className="text-xs text-gray-500">{contrato.lance?.distribuidora?.cnpj}</p>
           </div>
         </div>
 
         <div className="border-t border-gray-100 pt-4">
-          <h3 className="font-semibold mb-3">Cláusulas</h3>
+          <h3 className="font-semibold mb-3">Clausulas</h3>
           <div className="text-sm text-gray-700 space-y-2">
-            <p>1. Compra de <strong>{contrato.volume_litros?.toLocaleString()} litros</strong> de <strong>{contrato.combustivel}</strong>.</p>
-            <p>2. Preço: <strong>R$ {contrato.preco_litro?.toFixed(3)}/L</strong>, total <strong>R$ {contrato.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>.</p>
-            <p>3. Entrega conforme prazo do leilão. Pagamento via PIX após assinaturas.</p>
+            <p>1. Compra de <strong>{contrato.leilao?.volume?.toLocaleString()} litros</strong> de <strong>{contrato.leilao?.combustivel}</strong>.</p>
+            <p>2. Preco: <strong>R$ {contrato.lance?.preco?.toFixed(3)}/L</strong>, total <strong>R$ {contrato.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>.</p>
+            <p>3. Entrega conforme prazo do leilao. Pagamento via PIX apos assinaturas.</p>
           </div>
         </div>
 
@@ -110,8 +109,8 @@ export default function ContratoDistribuidoraPage({ params }: { params: Promise<
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-2">Distribuidora</p>
-              {contrato.assinatura_distribuidora ? (
-                <img src={contrato.assinatura_distribuidora} alt="Assinatura Distribuidora" className="border rounded-lg h-[110px]" />
+              {contrato.assinatura_dist ? (
+                <img src={contrato.assinatura_dist} alt="Assinatura Distribuidora" className="border rounded-lg h-[110px]" />
               ) : <p className="text-xs text-gray-400">Pendente</p>}
             </div>
           </div>

@@ -14,12 +14,38 @@ export default function PagamentosDistribuidoraPage() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
+
+      // Get contratos through lances (distribuidora_id doesn't exist on contratos)
+      const { data: userLances } = await supabase
+        .from('lances')
+        .select('id')
+        .eq('user_id', user.id)
+
+      if (!userLances || userLances.length === 0) {
+        setPagamentos([])
+        setLoading(false)
+        return
+      }
+
+      const lanceIds = userLances.map(l => l.id)
+      const { data: userContratos } = await supabase
+        .from('contratos')
+        .select('id')
+        .in('lance_id', lanceIds)
+
+      if (!userContratos || userContratos.length === 0) {
+        setPagamentos([])
+        setLoading(false)
+        return
+      }
+
+      const contratoIds = userContratos.map(c => c.id)
       const { data } = await supabase
         .from('pagamentos')
-        .select('*, contrato:contratos(*)')
-        .eq('contrato.distribuidora_id', user.id)
+        .select('*, contrato:contratos(*, leilao:leiloes(*))')
+        .in('contrato_id', contratoIds)
         .order('created_at', { ascending: false })
-      setPagamentos((data || []).filter((p: Pagamento) => p.contrato))
+      setPagamentos(data || [])
       setLoading(false)
     }
     load()
@@ -41,7 +67,7 @@ export default function PagamentosDistribuidoraPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-semibold">R$ {p.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                  <p className="text-xs text-gray-500">{p.contrato?.combustivel} • {p.contrato?.volume_litros?.toLocaleString()}L</p>
+                  <p className="text-xs text-gray-500">{p.contrato?.leilao?.combustivel} - {p.contrato?.leilao?.volume?.toLocaleString()}L</p>
                 </div>
                 <StatusBadge status={p.status} />
               </div>

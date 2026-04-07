@@ -37,33 +37,33 @@ export default function PostoDashboard() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <Link href="/posto/novo-leilao" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-dark">
-          + Novo Leilão
+          + Novo Leilao
         </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <MetricCard label="Leilões Abertos" value={abertos} icon="🔥" />
+        <MetricCard label="Leiloes Abertos" value={abertos} icon="🔥" />
         <MetricCard label="Contratados" value={contratados} icon="✅" />
-        <MetricCard label="Total Leilões" value={leiloes.length} icon="📋" />
+        <MetricCard label="Total Leiloes" value={leiloes.length} icon="📋" />
         <MetricCard label="Economia Est." value="R$ --" icon="💰" />
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Leilões Recentes</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">Leiloes Recentes</h2>
       {loading ? (
         <p className="text-gray-500 text-sm">Carregando...</p>
       ) : leiloes.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-          <p className="text-gray-500 mb-4">Nenhum leilão criado ainda</p>
-          <Link href="/posto/novo-leilao" className="text-brand font-medium hover:underline">Criar primeiro leilão</Link>
+          <p className="text-gray-500 mb-4">Nenhum leilao criado ainda</p>
+          <Link href="/posto/novo-leilao" className="text-brand font-medium hover:underline">Criar primeiro leilao</Link>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Combustível</th>
+                <th className="text-left px-4 py-3 font-medium">Combustivel</th>
                 <th className="text-left px-4 py-3 font-medium">Volume</th>
-                <th className="text-left px-4 py-3 font-medium">Preço Teto</th>
+                <th className="text-left px-4 py-3 font-medium">Preco Teto</th>
                 <th className="text-left px-4 py-3 font-medium">Tempo Restante</th>
                 <th className="text-left px-4 py-3 font-medium">Status</th>
                 <th className="text-left px-4 py-3 font-medium"></th>
@@ -73,9 +73,9 @@ export default function PostoDashboard() {
               {leiloes.map((l) => (
                 <tr key={l.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">{l.combustivel}</td>
-                  <td className="px-4 py-3">{l.volume_litros?.toLocaleString()}L</td>
+                  <td className="px-4 py-3">{l.volume?.toLocaleString()}L</td>
                   <td className="px-4 py-3">R$ {l.preco_teto?.toFixed(2)}</td>
-                  <td className="px-4 py-3"><Countdown endDate={l.end_time} /></td>
+                  <td className="px-4 py-3"><Countdown endDate={l.deadline} /></td>
                   <td className="px-4 py-3"><StatusBadge status={l.status} /></td>
                   <td className="px-4 py-3">
                     <Link href={`/posto/leilao/${l.id}`} className="text-brand hover:underline text-xs">Ver</Link>

@@ -29,10 +29,10 @@ export default function LeiloesDistribuidoraPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Todos os Leilões Abertos</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Todos os Leiloes Abertos</h1>
       {leiloes.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-          <p className="text-gray-500">Nenhum leilão aberto no momento</p>
+          <p className="text-gray-500">Nenhum leilao aberto no momento</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -41,14 +41,14 @@ export default function LeiloesDistribuidoraPage() {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="font-semibold">{l.combustivel}</h3>
-                  <p className="text-xs text-gray-500">{l.posto?.nome} • {l.regiao}</p>
+                  <p className="text-xs text-gray-500">{l.posto?.nome} - {l.regiao}</p>
                 </div>
                 <StatusBadge status={l.status} />
               </div>
               <div className="grid grid-cols-3 gap-2 text-sm mb-4">
-                <div><span className="text-gray-500 text-xs">Volume</span><p className="font-medium">{l.volume_litros?.toLocaleString()}L</p></div>
+                <div><span className="text-gray-500 text-xs">Volume</span><p className="font-medium">{l.volume?.toLocaleString()}L</p></div>
                 <div><span className="text-gray-500 text-xs">Teto</span><p className="font-medium">R$ {l.preco_teto?.toFixed(2)}</p></div>
-                <div><span className="text-gray-500 text-xs">Tempo</span><p><Countdown endDate={l.end_time} /></p></div>
+                <div><span className="text-gray-500 text-xs">Tempo</span><p><Countdown endDate={l.deadline} /></p></div>
               </div>
               <Link href={`/distribuidora/leilao/${l.id}`} className="block text-center py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-dark">
                 Dar Lance

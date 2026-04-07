@@ -39,37 +39,35 @@ export async function POST() {
     await supabase.from('lances').delete().neq('id', '00000000-0000-0000-0000-000000000000')
     await supabase.from('leiloes').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 
-    // Leilões
+    // Leiloes
     const now = new Date()
-    const leilao1EndTime = new Date(now.getTime() + 3 * 3600000).toISOString()
-    const leilao2EndTime = new Date(now.getTime() + 24 * 3600000).toISOString()
+    const leilao1Deadline = new Date(now.getTime() + 3 * 3600000).toISOString()
+    const leilao2Deadline = new Date(now.getTime() + 24 * 3600000).toISOString()
 
     const { data: leiloesData, error: leilaoError } = await supabase.from('leiloes').insert([
       {
         posto_id: posto1Id,
         combustivel: 'Diesel S10',
-        volume_litros: 15000,
+        volume: 15000,
         preco_teto: 5.89,
         prazo_entrega: new Date(now.getTime() + 7 * 86400000).toISOString().split('T')[0],
-        duracao_horas: 3,
         regiao: 'São Paulo - Capital',
         forma_pagamento: 'PIX',
         tipo_compra: 'spot',
         status: 'aberto',
-        end_time: leilao1EndTime,
+        deadline: leilao1Deadline,
       },
       {
         posto_id: posto2Id,
         combustivel: 'Gasolina Comum',
-        volume_litros: 20000,
+        volume: 20000,
         preco_teto: 5.45,
         prazo_entrega: new Date(now.getTime() + 10 * 86400000).toISOString().split('T')[0],
-        duracao_horas: 24,
         regiao: 'São Paulo - Interior',
         forma_pagamento: 'Boleto',
         tipo_compra: 'spot',
         status: 'aberto',
-        end_time: leilao2EndTime,
+        deadline: leilao2Deadline,
       },
     ]).select('id')
 
@@ -79,58 +77,46 @@ export async function POST() {
     const leilao1Id = leiloesData[0].id
     const leilao2Id = leiloesData[1].id
 
-    // Lances
+    // Lances (distribuidora_id removed - DB uses user_id via RLS/trigger)
     const { data: lancesData, error: lanceError } = await supabase.from('lances').insert([
       {
         leilao_id: leilao1Id,
-        distribuidora_id: dist1Id,
-        preco_litro: 5.72,
-        prazo_entrega: new Date(now.getTime() + 5 * 86400000).toISOString().split('T')[0],
-        observacao: 'Entrega em caminhão próprio, frete incluso',
+        user_id: dist1Id,
+        preco: 5.72,
+        prazo: new Date(now.getTime() + 5 * 86400000).toISOString().split('T')[0],
       },
       {
         leilao_id: leilao1Id,
-        distribuidora_id: dist2Id,
-        preco_litro: 5.65,
-        prazo_entrega: new Date(now.getTime() + 6 * 86400000).toISOString().split('T')[0],
-        observacao: 'Melhor preço da região Sul',
+        user_id: dist2Id,
+        preco: 5.65,
+        prazo: new Date(now.getTime() + 6 * 86400000).toISOString().split('T')[0],
       },
       {
         leilao_id: leilao2Id,
-        distribuidora_id: dist1Id,
-        preco_litro: 5.32,
-        prazo_entrega: new Date(now.getTime() + 8 * 86400000).toISOString().split('T')[0],
-        observacao: 'Disponibilidade imediata no terminal Paulínia',
+        user_id: dist1Id,
+        preco: 5.32,
+        prazo: new Date(now.getTime() + 8 * 86400000).toISOString().split('T')[0],
       },
       {
         leilao_id: leilao2Id,
-        distribuidora_id: dist2Id,
-        preco_litro: 5.38,
-        prazo_entrega: new Date(now.getTime() + 9 * 86400000).toISOString().split('T')[0],
-        observacao: 'Gasolina A premium',
+        user_id: dist2Id,
+        preco: 5.38,
+        prazo: new Date(now.getTime() + 9 * 86400000).toISOString().split('T')[0],
       },
     ]).select('id')
 
     if (lanceError) throw lanceError
     if (!lancesData || lancesData.length < 2) throw new Error('Falha ao criar lances')
 
-    // Contrato (leilao 1, lance 2 — melhor preço)
+    // Contrato (leilao 1, lance 2 - melhor preco)
     const lance2Id = lancesData[1].id
-    const valorTotal = 5.65 * 15000
-    const raw = `${leilao1Id}|${lance2Id}|${valorTotal}|${now.toISOString()}`
-    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw))
-    const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
+    const valor = 5.65 * 15000
 
     const { data: contratoData, error: contratoError } = await supabase.from('contratos').insert([{
       leilao_id: leilao1Id,
       lance_id: lance2Id,
       posto_id: posto1Id,
-      distribuidora_id: dist2Id,
-      valor_total: valorTotal,
-      volume_litros: 15000,
-      preco_litro: 5.65,
-      combustivel: 'Diesel S10',
-      hash_sha256: hash,
+      valor,
       status: 'pendente',
     }]).select('id')
 
@@ -138,38 +124,32 @@ export async function POST() {
 
     const contratoId = contratoData![0].id
 
-    // Pagamento
-    const pixCode = '00020126580014br.gov.bcb.pix0136fuelbid-demo-00015204000053039865802BR5925FUELBID6009SAO PAULO62070503***6304'
-
+    // Pagamento (pix_code removed - doesn't exist in DB)
     const { data: pagData, error: pagError } = await supabase.from('pagamentos').insert([{
       contrato_id: contratoId,
-      valor: valorTotal,
+      valor,
       status: 'pendente',
-      pix_code: pixCode,
     }]).select('id')
 
     if (pagError) throw pagError
 
-    // NF-e
-    const icms = valorTotal * 0.18
-    const pis = valorTotal * 0.0165
-    const cofins = valorTotal * 0.076
-    const valorLiquido = valorTotal - icms - pis - cofins
+    // NF-e (pagamento_id and valor_liquido removed - don't exist in DB)
+    const icms = valor * 0.18
+    const pis = valor * 0.0165
+    const cofins = valor * 0.076
     const chaveAcesso = Array.from({ length: 44 }, () => Math.floor(Math.random() * 10)).join('')
 
     await supabase.from('nfes').insert([{
       contrato_id: contratoId,
-      pagamento_id: pagData![0].id,
       chave_acesso: chaveAcesso,
-      valor_total: valorTotal,
+      valor_total: valor,
       icms,
       pis,
       cofins,
-      valor_liquido: valorLiquido,
       emitente: distribuidoras[1]?.nome || distribuidoras[0].nome,
       destinatario: postos[0].nome,
       combustivel: 'Diesel S10',
-      volume_litros: 15000,
+      volume: 15000,
     }])
 
     return Response.json({
