@@ -14,8 +14,8 @@ export default function SobrePage() {
       <header className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-lg">F</div>
-            <span className="text-xl font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+            <div className="w-9 h-9 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-lg">T</div>
+            <span className="text-xl font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
           </Link>
           <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">Voltar</Link>
         </div>
@@ -107,7 +107,7 @@ export default function SobrePage() {
       </section>
 
       <footer className="border-t border-gray-100 bg-white py-8 text-center">
-        <p className="text-xs text-gray-300">FuelBid 2025 — FGV-EAESP</p>
+        <p className="text-xs text-gray-300">Tanqe 2025 — FGV-EAESP</p>
       </footer>
     </div>
   )
