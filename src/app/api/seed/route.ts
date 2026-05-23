@@ -72,7 +72,7 @@ export async function POST() {
         'O volume total de 15.000 litros será entregue em remessa única no prazo de 3 dias úteis.',
         'O preço acordado de R$ 5,58/L é fixo e inclui frete até o posto comprador.',
         'O pagamento será realizado via PIX em até 24 horas após confirmação da entrega.',
-        'Ambas as partes concordam com os termos da plataforma FuelBid e legislação vigente.',
+        'Ambas as partes concordam com os termos da plataforma Tanqe e legislação vigente.',
       ],
       hash_contrato: hash,
       assinatura_posto: 'data:image/png;base64,signed-posto',
