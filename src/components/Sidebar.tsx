@@ -57,8 +57,8 @@ export default function Sidebar({ tipo }: { tipo: 'posto' | 'distribuidora'; ite
       {/* Logo */}
       <div className="px-6 pt-6 pb-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">F</div>
-          <span className="text-xl font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+          <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">T</div>
+          <span className="text-xl font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
         </Link>
       </div>
 
