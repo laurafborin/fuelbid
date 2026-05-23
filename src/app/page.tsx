@@ -63,8 +63,8 @@ export default function Home() {
       <header className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-lg">F</div>
-            <span className="text-xl font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+            <div className="w-9 h-9 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-lg">T</div>
+            <span className="text-xl font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
           </Link>
           <nav className="flex items-center gap-3">
             <Link href="/sobre" className="text-sm text-gray-500 hover:text-gray-900 hidden sm:inline">Sobre</Link>
@@ -140,8 +140,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2.5 mb-2">
-                <div className="w-8 h-8 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-sm">F</div>
-                <span className="text-lg font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+                <div className="w-8 h-8 rounded-xl bg-[#E8621A] flex items-center justify-center text-white font-black text-sm">T</div>
+                <span className="text-lg font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
               </div>
               <p className="text-sm text-gray-400 mt-2">Marketplace B2B de combustíveis com leilão reverso.</p>
             </div>
@@ -163,7 +163,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-100 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-xs text-gray-300">© 2025 FuelBid. Todos os direitos reservados.</p>
+            <p className="text-xs text-gray-300">© 2025 Tanqe. Todos os direitos reservados.</p>
             <button onClick={handleSeed} disabled={seedLoading} className="text-xs text-gray-300 hover:text-gray-500 transition-colors disabled:opacity-50">
               {seedLoading ? 'Carregando...' : 'Carregar Dados Demo'}
             </button>
