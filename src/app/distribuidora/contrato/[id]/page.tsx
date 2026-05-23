@@ -52,7 +52,7 @@ export default function ContratoDistPage({ params }: { params: Promise<{ id: str
     `Volume: ${contrato.leilao?.volume?.toLocaleString()} litros.`,
     `Preco: R$ ${contrato.lance?.preco?.toFixed(3)}/L. Total: R$ ${contrato.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}.`,
     'Pagamento via PIX apos entrega.',
-    'Termos da plataforma FuelBid.',
+    'Termos da plataforma Tanqe.',
   ]
 
   return (
