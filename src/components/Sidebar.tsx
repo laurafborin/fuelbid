@@ -12,6 +12,7 @@ const postoItems: SidebarItem[] = [
   { label: 'Dashboard', href: '/posto/dashboard', icon: Icons.grid },
   { label: 'Novo Leilão', href: '/posto/novo-leilao', icon: Icons.plus },
   { label: 'Contratos', href: '/posto/contratos', icon: Icons.file },
+  { label: 'Auditoria', href: '/posto/auditoria', icon: Icons.calculator },
   { label: 'Pagamentos', href: '/posto/pagamentos', icon: Icons.card },
   { label: 'NF-es', href: '/posto/nfes', icon: Icons.check },
   { label: 'Perfil', href: '/posto/perfil', icon: Icons.user },
