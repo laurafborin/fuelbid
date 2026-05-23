@@ -10,10 +10,10 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'FuelBid — Marketplace B2B de Combustíveis',
+  title: 'Tanqe — Marketplace B2B de Combustíveis',
   description: 'Plataforma de leilão reverso conectando postos de bandeira branca a distribuidoras de combustível. Cotação em tempo real, contratos digitais e compliance fiscal.',
   openGraph: {
-    title: 'FuelBid — Marketplace B2B de Combustíveis',
+    title: 'Tanqe — Marketplace B2B de Combustíveis',
     description: 'Leilão reverso de combustíveis para postos independentes.',
     locale: 'pt_BR',
     type: 'website',
