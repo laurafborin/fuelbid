@@ -36,7 +36,7 @@ export async function POST() {
     },
     'fuelbid@fuelbid.com': {
       tipo: 'posto',
-      nome: 'FuelBid Institucional',
+      nome: 'Tanqe Institucional',
       cidade: 'São Paulo',
       estado: 'SP',
       lat: -23.555,
