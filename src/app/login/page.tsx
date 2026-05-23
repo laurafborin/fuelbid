@@ -50,8 +50,8 @@ export default function LoginPage() {
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-[#F8F7F4]">
         <div className="w-full max-w-md">
           <Link href="/" className="flex items-center justify-center gap-2.5 mb-8">
-            <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">F</div>
-            <span className="text-xl font-bold text-gray-900">Fuel<span className="text-[#E8621A]">Bid</span></span>
+            <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">T</div>
+            <span className="text-xl font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
           </Link>
 
           <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta</h2>
