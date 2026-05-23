@@ -52,7 +52,7 @@ export default function ContratoDetalhePage({ params }: { params: Promise<{ id: 
     `Volume de ${contrato.leilao?.volume?.toLocaleString()} litros a ser entregue conforme prazo do leilao.`,
     `Preco acordado de R$ ${contrato.lance?.preco?.toFixed(3)}/L, totalizando R$ ${contrato.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}.`,
     'Pagamento via PIX em ate 24 horas apos confirmacao da entrega.',
-    'Ambas as partes concordam com os termos da plataforma FuelBid.',
+    'Ambas as partes concordam com os termos da plataforma Tanqe.',
   ]
 
   return (
