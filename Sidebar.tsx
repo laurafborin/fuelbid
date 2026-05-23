@@ -1,93 +1,126 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect, type ReactNode } from 'react'
+import { Icons } from './SvgIcons'
 
-interface ToastItem {
-  id: number
-  message: string
-  type: 'success' | 'error' | 'info'
-}
+interface SidebarItem { label: string; href: string; icon: ReactNode }
 
-const ToastContext = createContext<{
-  show: (message: string, type?: 'success' | 'error' | 'info') => void
-}>({ show: () => {} })
+const postoItems: SidebarItem[] = [
+  { label: 'Dashboard', href: '/posto/dashboard', icon: Icons.grid },
+  { label: 'Novo Leilão', href: '/posto/novo-leilao', icon: Icons.plus },
+  { label: 'Contratos', href: '/posto/contratos', icon: Icons.file },
+  { label: 'Auditoria', href: '/posto/auditoria', icon: Icons.calculator },
+  { label: 'Pagamentos', href: '/posto/pagamentos', icon: Icons.card },
+  { label: 'NF-es', href: '/posto/nfes', icon: Icons.check },
+  { label: 'Perfil', href: '/posto/perfil', icon: Icons.user },
+]
 
-export function useToast() {
-  return useContext(ToastContext)
-}
+const distItems: SidebarItem[] = [
+  { label: 'Dashboard', href: '/distribuidora/dashboard', icon: Icons.grid },
+  { label: 'Leilões', href: '/distribuidora/leiloes', icon: Icons.fire },
+  { label: 'Analytics', href: '/distribuidora/analytics', icon: Icons.chart },
+  { label: 'Contratos', href: '/distribuidora/contratos', icon: Icons.file },
+  { label: 'Pagamentos', href: '/distribuidora/pagamentos', icon: Icons.card },
+  { label: 'NF-es', href: '/distribuidora/nfes', icon: Icons.check },
+  { label: 'Perfil', href: '/distribuidora/perfil', icon: Icons.user },
+]
 
-function ToastMessage({ toast, onRemove }: { toast: ToastItem; onRemove: () => void }) {
-  const [progress, setProgress] = useState(100)
+export default function Sidebar({ tipo }: { tipo: 'posto' | 'distribuidora'; items?: unknown }) {
+  const pathname = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [userName, setUserName] = useState('')
+
+  const navItems = tipo === 'posto' ? postoItems : distItems
 
   useEffect(() => {
-    const duration = 3000
-    const interval = 30
-    const step = (interval / duration) * 100
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        if (prev <= 0) {
-          clearInterval(timer)
-          onRemove()
-          return 0
-        }
-        return prev - step
-      })
-    }, interval)
-    return () => clearInterval(timer)
-  }, [onRemove])
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase.from('profiles').select('nome').eq('id', user.id).single()
+      setUserName(data?.nome || '')
+    }
+    loadUser()
+  }, [])
 
-  const styles = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/login')
   }
 
-  const icons = {
-    success: '✓',
-    error: '✗',
-    info: 'ℹ',
-  }
-
-  const barColors = {
-    success: 'bg-green-400',
-    error: 'bg-red-400',
-    info: 'bg-blue-400',
-  }
-
-  return (
-    <div className={`relative overflow-hidden rounded-xl border px-4 py-3 text-sm shadow-lg animate-[slideIn_0.3s_ease-out] ${styles[toast.type]}`}>
-      <div className="flex items-center gap-2">
-        <span className="font-bold">{icons[toast.type]}</span>
-        <span>{toast.message}</span>
+  const nav = (
+    <aside className="w-[260px] min-h-screen bg-white border-r border-gray-100 flex flex-col">
+      {/* Logo */}
+      <div className="px-6 pt-6 pb-4">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#E8621A] flex items-center justify-center text-white font-black text-xl">T</div>
+          <span className="text-xl font-bold text-gray-900">Tan<span className="text-[#E8621A]">qe</span></span>
+        </Link>
       </div>
-      <div className="absolute bottom-0 left-0 h-0.5 transition-all" style={{ width: `${progress}%` }}>
-        <div className={`h-full ${barColors[toast.type]}`} />
+
+      {/* User card */}
+      {userName && (
+        <div className="mx-4 mt-2 mb-6 p-3 bg-gradient-to-r from-[#FFF1E8] to-[#FEF3EC] rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#E8621A] text-white font-semibold text-sm flex items-center justify-center flex-shrink-0">{userName.charAt(0)}</div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">{userName}</p>
+              <p className="text-xs text-[#E8621A]/70 capitalize">{tipo}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Nav label */}
+      <p className="text-[10px] font-semibold text-gray-300 uppercase tracking-[0.15em] px-6 mb-1 mt-2">
+        {tipo === 'posto' ? 'Painel do Posto' : 'Painel da Distribuidora'}
+      </p>
+
+      {/* Nav items */}
+      <nav className="flex-1 mt-1 space-y-0.5">
+        {navItems.map(item => {
+          const active = pathname === item.href || (item.href !== `/${tipo}/dashboard` && pathname.startsWith(item.href + '/'))
+          return (
+            <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}
+              className={`mx-3 px-3 py-2.5 rounded-xl flex items-center gap-3 text-[13px] cursor-pointer transition-all duration-150 ${
+                active
+                  ? 'bg-[#E8621A] text-white font-semibold shadow-sm shadow-[#E8621A]/20'
+                  : 'text-gray-400 hover:text-gray-700 hover:bg-gray-50'
+              }`}>
+              {item.icon}
+              {item.label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* Logout */}
+      <div className="mx-6 my-2 border-t border-gray-100" />
+      <div className="p-3">
+        <button onClick={handleLogout} className="w-full mx-0 px-3 py-2.5 rounded-xl flex items-center gap-3 text-[13px] text-gray-300 hover:text-red-400 transition-colors">
+          {Icons.logout}
+          Sair
+        </button>
       </div>
-    </div>
+    </aside>
   )
-}
-
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<ToastItem[]>([])
-  let counter = 0
-
-  const show = useCallback((message: string, type: 'success' | 'error' | 'info' = 'success') => {
-    const id = ++counter
-    setToasts(prev => [...prev, { id, message, type }])
-  }, [])
-
-  const remove = useCallback((id: number) => {
-    setToasts(prev => prev.filter(t => t.id !== id))
-  }, [])
 
   return (
-    <ToastContext.Provider value={{ show }}>
-      {children}
-      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
-        {toasts.map(toast => (
-          <ToastMessage key={toast.id} toast={toast} onRemove={() => remove(toast.id)} />
-        ))}
-      </div>
-    </ToastContext.Provider>
+    <>
+      <button onClick={() => setMobileOpen(true)} className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl border border-gray-200 flex items-center justify-center shadow-sm">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+      <div className="hidden lg:block">{nav}</div>
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
+          <div className="relative">{nav}</div>
+        </div>
+      )}
+    </>
   )
 }
