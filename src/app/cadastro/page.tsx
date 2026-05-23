@@ -61,8 +61,8 @@ export default function CadastroPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <span className="w-9 h-9 bg-brand rounded-lg flex items-center justify-center text-white font-bold text-xl">F</span>
-          <span className="text-xl font-bold text-gray-900">FuelBid</span>
+          <span className="w-9 h-9 bg-brand rounded-lg flex items-center justify-center text-white font-bold text-xl">T</span>
+          <span className="text-xl font-bold text-gray-900">Tanqe</span>
         </Link>
 
         <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
